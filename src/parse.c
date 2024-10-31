@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:25:31 by alfreire          #+#    #+#             */
-/*   Updated: 2024/10/31 12:26:03 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:03:37 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,28 +49,27 @@ int	wrong_input_check(int argc, char **argv)
 
 int	ft_atoi(char *str)
 {
-	int		count;
-	long	result;
-	int		sign;
+	int	i;
+	int	sign;
+	int	res;
 
-	count = 0;
-	result = 0;
+	i = 0;
 	sign = 1;
-	while (str[count] == '\r' || str[count] == '\t' || str[count] == ' '
-		|| str[count] == '\f' || str[count] == '\v' || str[count] == '\n')
-		count++;
-	if (str[count] == '-')
+	res = 0;
+	while ((str[i] > 8 && str[i] < 14) || str[i] == 32)
+		i++;
+	if (str[i] == 45 || str[i] == 43)
 	{
-		sign = -1;
-		count++;
+		if (str[i] == 45)
+			sign = -1;
+		i++;
 	}
-	else if (str[count] == '+')
-		count++;
-	if (!(str[count] >= '0' && str[count] <= '9'))
-		return (0);
-	while (str[count] >= '0' && str[count] <= '9')
-		result = result * 10 + (str[count++] - '0');
-	return (result * sign);
+	while (str[i] > 47 && str[i] < 58)
+	{
+		res = (res * 10) + (str[i] - 48);
+		i++;
+	}
+	return (sign * res);
 }
 
 int	is_input_digit(int argc, char **argv)

@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/04 08:21:01 by jergashe          #+#    #+#             */
-/*   Updated: 2024/10/30 15:01:52 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:44:17 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <sys/time.h>
 # include <stdint.h>
 # include <stdbool.h>
+# include <sys/types.h>
 
 # define WRONG_INPUT 1
 # define MALLOC_ERROR 2
@@ -38,7 +39,7 @@ typedef enum e_philo_state
 	THINKING = 2,
 	DEAD = 3,
 	FULL = 4,
-	IDLE = 5
+	INIT = 5
 }	t_state;
 
 struct	s_data;
@@ -54,8 +55,8 @@ typedef struct s_philo
 	pthread_mutex_t	mut_state;
 	pthread_mutex_t	mut_nbr_meals_had;
 	pthread_mutex_t	mut_last_time_eaten;
-	u_int64_t		last_time2eat;
-}t_philo;
+	u_int64_t		last_time_eaten;
+}	t_philo;
 
 typedef struct s_data
 {
@@ -78,7 +79,7 @@ typedef struct s_data
 	pthread_t		*philo_ths;
 	pthread_mutex_t	*forks;
 	t_philo			*philos;
-}t_data;
+}	t_data;
 
 // routine.c
 void		*routine(void *philo_p);
@@ -130,7 +131,7 @@ uint64_t	get_start_time(t_data *data);
 int			get_philos_nbr(t_data *data);
 t_state		get_philo_state(t_philo *philo);
 int			get_nbr_meals_philo_had(t_philo *philo);
-uint64_t	get_last_time2eat(t_philo *philo);
+uint64_t	get_last_time_eaten(t_philo *philo);
 
 // setters.c
 void		set_keep_iterating(t_data *data, bool set_to);

@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:25:10 by alfreire          #+#    #+#             */
-/*   Updated: 2024/10/30 18:48:11 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:44:17 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ uint64_t	get_time2eat(t_data *data)
 	return (time2eat);
 }
 
-uint64_t	get_last_time2eat(t_philo *philo)
+uint64_t	get_last_time_eaten(t_philo *philo)
 {
-	uint64_t	last_time2eat;
+	uint64_t	last_time_eaten;
 
 	pthread_mutex_lock(&philo->mut_last_time_eaten);
-	last_time2eat = philo->last_time2eat;
+	last_time_eaten = philo->last_time_eaten;
 	pthread_mutex_unlock(&philo->mut_last_time_eaten);
-	return (last_time2eat);
+	return (last_time_eaten);
 }

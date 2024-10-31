@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:25:19 by alfreire          #+#    #+#             */
-/*   Updated: 2024/10/30 15:01:52 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/10/31 16:31:31 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,38 @@
 
 int	init_forks(t_data *data)
 {
-	int		i;
-	t_philo	*philos;
+	int	i;
 
-	philos = data->philos;
 	i = -1;
 	while (++i < data->philos_nbr)
 		pthread_mutex_init(&data->forks[i], NULL);
-	i = 0;
-	philos[0].left_f = &data->forks[0];
-	philos[0].right_f = &data->forks[data->philos_nbr - 1];
-	while (++i < data->philos_nbr)
+	data->philos[0].left_f = &data->forks[0];
+	data->philos[0].right_f = &data->forks[data->philos_nbr - 1];
+	i = 1;
+	while (i < data->philos_nbr)
 	{
-		philos[i].left_f = &data->forks[i];
-		philos[i].right_f = &data->forks[i - 1];
+		data->philos[i].left_f = &data->forks[i];
+		data->philos[i].right_f = &data->forks[i - 1];
+		i++;
 	}
 	return (0);
 }
 
 int	init_philos(t_data *data)
 {
-	t_philo	*philos;
-	int		i;
+	int	i;
 
 	i = 0;
-	philos = data->philos;
 	while (i < data->philos_nbr)
 	{
-		philos[i].data = data;
-		philos[i].id = i + 1;
-		philos[i].nbr_meals_had = 0;
-		philos[i].state = IDLE;
-		pthread_mutex_init(&philos[i].mut_state, NULL);
-		pthread_mutex_init(&philos[i].mut_nbr_meals_had, NULL);
-		pthread_mutex_init(&philos[i].mut_last_time_eaten, NULL);
-		update_last_meal_time(&philos[i]);
+		data->philos[i].data = data;
+		data->philos[i].id = i + 1;
+		data->philos[i].nbr_meals_had = 0;
+		data->philos[i].state = INIT;
+		pthread_mutex_init(&data->philos[i].mut_state, NULL);
+		pthread_mutex_init(&data->philos[i].mut_nbr_meals_had, NULL);
+		pthread_mutex_init(&data->philos[i].mut_last_time_eaten, NULL);
+		update_last_meal_time(&data->philos[i]);
 		i++;
 	}
 	return (0);

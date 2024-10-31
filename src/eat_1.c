@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:50:36 by alfreire          #+#    #+#             */
-/*   Updated: 2024/10/30 15:01:52 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:44:17 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	drop_forks(t_philo *philo)
 void	update_last_meal_time(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->mut_last_time_eaten);
-	philo->last_time2eat = get_time();
+	philo->last_time_eaten = get_time();
 	pthread_mutex_unlock(&philo->mut_last_time_eaten);
 }
 

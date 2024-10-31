@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:25:39 by alfreire          #+#    #+#             */
-/*   Updated: 2024/10/30 14:44:29 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/10/31 14:02:20 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 int	run_threads(t_data *data)
 {
 	int	i;
-	int	nb_of_philos;
+	int	nbr_of_philos;
 
-	nb_of_philos = get_philos_nbr(data);
+	nbr_of_philos = get_philos_nbr(data);
 	i = -1;
 	data->start_time = get_time();
-	while (++i < nb_of_philos)
+	while (++i < nbr_of_philos)
 	{
 		if (pthread_create(&data->philo_ths[i], NULL,
 				&routine, &data->philos[i]))
