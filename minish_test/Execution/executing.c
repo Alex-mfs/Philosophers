@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 19:30:33 by joao-rib          #+#    #+#             */
-/*   Updated: 2024/11/25 18:56:08 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/25 21:46:19 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ pid_t	child_exec(t_ast *node, t_minish *ms)
 pid_t	pipeline_exec(t_ast	*node, t_minish *ms)
 {
 	pid_t	last_child_pid;
+	t_ast	*redir_node;
 
 	last_child_pid = 0;
 	if (!node)
@@ -113,6 +114,12 @@ pid_t	pipeline_exec(t_ast	*node, t_minish *ms)
 	last_child_pid = pipeline_exec(node->right, ms);
 	if (!is_redir_or_pipe(node->cmd))
 	{
+		redir_node = node->redirections;
+		while (redir_node)
+		{
+			execute_redir(redir_node->cmd, redir_node->args[0], ms);
+			redir_node = redir_node->next;		
+		}
 		if (need2be_parent(node->cmd, node->args[0], ms))
 			do_command(node->cmd, node->args, ms);
 		else
@@ -128,9 +135,13 @@ void	execute(t_minish *ms)
 	int		status;
 	pid_t	last;
 	t_ast	*head;
+	// int		original_stdin; chat
+	// int		original_stdout;
 
 	head = lastpipe(ms->cmd_list);
 	status = 0x7F;
+	// original_stdin = dup(STDIN_FILENO); chat
+	// original_stdout = dup(STDOUT_FILENO);
 	pipeline_matrix(ms);
 	last = pipeline_exec(head, ms);
 	last = waitpid(last, &status, 0);
@@ -139,4 +150,8 @@ void	execute(t_minish *ms)
 	if (WIFEXITED(status))
 		set_exit_status(WEXITSTATUS(status));
 	set_signals();
+	// dup2(original_stdin, STDIN_FILENO); chat
+	// dup2(original_stdout, STDOUT_FILENO);
+	// close(original_stdin);
+	// close(original_stdout);
 }

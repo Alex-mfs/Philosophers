@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 01:44:12 by alfreire          #+#    #+#             */
-/*   Updated: 2024/11/25 18:23:00 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/25 21:43:52 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,29 @@ void	relinking_in_out(t_minish *ms)
 	}
 }
 
+//       /    /   chatgpt sugeriu \     \     \  \\ //
+// void	relinking_in_out(t_minish *ms)
+// {
+// 	if (ms->fd_in != STDIN_FILENO)
+// 	{
+// 		if (dup2(ms->fd_in, STDIN_FILENO) == -1)
+// 		{
+// 			perror("dup2 fd_in");
+// 			exit(EXIT_FAILURE);
+// 		}
+// 		close(ms->fd_in); // Close after duplicating
+// 	}
+// 	if (ms->fd_out != STDOUT_FILENO)
+// 	{
+// 		if (dup2(ms->fd_out, STDOUT_FILENO) == -1)
+// 		{
+// 			perror("dup2 fd_out");
+// 			exit(EXIT_FAILURE);
+// 		}
+// 		close(ms->fd_out); // Close after duplicating
+// 	}
+// }
+
 void	close_in_out(int index, t_minish *ms)
 {
 	if (ms->fd_in > STDIN_FILENO)
@@ -62,6 +85,21 @@ void	close_in_out(int index, t_minish *ms)
 	ms->fd_in = 0;
 	ms->fd_out = 1;
 }
+
+//     /   /   /  /   chatgpt sugeriu \ \  \  \  \ //
+// void	close_in_out(int index, t_minish *ms)
+// {
+// 	if (ms->fd_in > STDERR_FILENO)
+// 		close(ms->fd_in);
+// 	if (ms->fd_out > STDERR_FILENO)
+// 		close(ms->fd_out);
+// 	if (index > 0)
+// 		close(ms->pipes[index - 1][0]);
+// 	if (index != (cmdlst_size(ms->cmd_list, false) - 1))
+// 		close(ms->pipes[index][1]);
+// 	ms->fd_in = STDIN_FILENO;
+// 	ms->fd_out = STDOUT_FILENO;
+// }
 
 void	count_pipes(t_minish *ms)
 {

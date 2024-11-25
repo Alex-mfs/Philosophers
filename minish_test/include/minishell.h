@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 09:45:30 by alfreire          #+#    #+#             */
-/*   Updated: 2024/11/25 18:48:30 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/25 20:40:33 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_ast
 	struct s_ast	*left;
 	struct s_ast	*right;
 	struct s_ast	*next;
+	struct s_ast	*redirections;
 }			t_ast;
 
 typedef struct s_minish

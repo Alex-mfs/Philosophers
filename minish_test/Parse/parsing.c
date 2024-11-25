@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joao-rib <joao-rib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 19:30:33 by joao-rib          #+#    #+#             */
-/*   Updated: 2024/11/06 16:40:34 by joao-rib         ###   ########.fr       */
+/*   Updated: 2024/11/25 20:44:00 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ static t_ast	*parse_pipe(t_ast *prev, t_ast *curr, t_minish *ms)
 static t_token	*parse_redir(t_ast *cmd, t_token *tk)
 {
 	t_ast	*redir;
+	t_ast	*last_redir;
 
 	redir = ft_calloc(1, sizeof(t_ast));
 	if (!redir)
@@ -65,10 +66,16 @@ static t_token	*parse_redir(t_ast *cmd, t_token *tk)
 	redir->left = NULL;
 	redir->right = NULL;
 	redir->next = NULL;
-	if (tk->type == REDIR_INPUT_1 || tk->type == REDIR_INPUT_2)
-		cmd->left = redir;
+	redir->redirections = NULL;
+	if (!cmd->redirections)
+		cmd->redirections = redir;
 	else
-		cmd->right = redir;
+	{
+		last_redir = cmd->redirections;
+		while (last_redir->next)
+			last_redir = last_redir->next;
+		last_redir->next = redir;
+	}
 	return (tk->next);
 }
 
