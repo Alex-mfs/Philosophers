@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 19:30:33 by joao-rib          #+#    #+#             */
-/*   Updated: 2024/11/25 18:53:27 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/26 14:48:47 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,56 @@ static void	tk_clear(t_token **lst)
 	}
 }
 
+// static void	cmd_clear(t_ast **lst)
+// {
+// 	t_ast	*buff;
+
+// 	if (lst)
+// 	{
+// 		while (*lst)
+// 		{
+// 			buff = (*lst)->next;
+// 			if ((*lst)->left && (*lst)->index >= 0)
+// 				cmd_clear(&((*lst)->left));
+// 			if ((*lst)->right && (*lst)->index >= 0)
+// 				cmd_clear(&((*lst)->right));
+// 			if ((*lst)->cmd)
+// 				free((*lst)->cmd);
+// 			if ((*lst)->args)
+// 				ft_free_matrix((*lst)->args);
+// 			free(*lst);
+// 			*lst = buff;
+// 		}
+// 	}
+// }
+
+
+/*
+Explicação:
+
+    Liberando Nós de Redirecionamento:
+        Percorremos a lista encadeada de redirecionamentos em cada nó de comando.
+        Para cada nó de redirecionamento, liberamos seu cmd, args e o próprio nó.
+
+    Evitando Desreferenciamento de Ponteiros Nulos:
+        Verificamos se lst e *lst não são NULL antes de comtinuar.
+
+    Liberando Subárvores Recursivamente:
+        As subárvores esquerda e direita são liberadas recursivamente,
+		se existirem e tiverem um índice válido.
+
+    Liberando o Nó Atual:
+        Após liberar todos os dados associados,
+		liberamos o nó atual e passamos para o próximo nó na lista.
+*/
+
 static void	cmd_clear(t_ast **lst)
 {
 	t_ast	*buff;
+	t_ast	*redir;
+	t_ast	*next_redir;
 
-	if (lst)
+	if (lst && *lst)
 	{
 		while (*lst)
 		{
@@ -52,6 +97,17 @@ static void	cmd_clear(t_ast **lst)
 				cmd_clear(&((*lst)->left));
 			if ((*lst)->right && (*lst)->index >= 0)
 				cmd_clear(&((*lst)->right));
+			redir = (*lst)->redirections;
+			while (redir)
+			{
+				next_redir = redir->next;
+				if (redir->cmd)
+					free(redir->cmd);
+				if (redir->args)
+					ft_free_matrix(redir->args);
+				free(redir);
+				redir = next_redir;
+			}
 			if ((*lst)->cmd)
 				free((*lst)->cmd);
 			if ((*lst)->args)

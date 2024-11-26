@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 19:30:33 by joao-rib          #+#    #+#             */
-/*   Updated: 2024/11/25 20:44:00 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/26 20:19:05 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,20 @@ static t_ast	*new_pipe(void)
 	pip = ft_calloc(1, sizeof(t_ast));
 	if (!pip)
 		return (NULL);
-	pip->cmd = ft_calloc(2, sizeof(char *));
-	if (!pip->cmd)
-		return (NULL);
 	pip->cmd = ft_strdup("|");
+	if (!pip->cmd)
+	{
+		free(pip);
+		return (NULL);
+	}
+	pip->args = NULL;
 	pip->args = ft_matrix_add_line(pip->args, ft_strdup(""));
+	if (!pip->args)
+	{
+		free(pip->cmd);
+		free(pip);
+		return (NULL);
+	}
 	return (pip);
 }
 

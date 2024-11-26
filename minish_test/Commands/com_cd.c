@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 18:07:12 by alfreire          #+#    #+#             */
-/*   Updated: 2024/10/16 18:24:06 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/26 18:35:21 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,5 @@ void	cd(char **tokens, t_minish *ms)
 	if (stat(tokens[0], &stats) == 0 && S_ISDIR(stats.st_mode))
 		change_dir(ft_strdup(tokens[0]), ms);
 	else
-		error("minishell: cd: not a directory\n", 127);
+		error("minishell: cd: not a directory\n", 1);
 }

@@ -3,24 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joao-rib <joao-rib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 13:52:25 by joao-rib          #+#    #+#             */
-/*   Updated: 2024/11/25 12:30:54 by joao-rib         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:52:52 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include/minishell.h"
 
-static int	g_exit_status = 0;
+int	g_exit_status = 0;
 
 void	set_exit_status(int status)
 {
+	//printf("set_exit_status: Setting exit status to %d\n", status);
 	g_exit_status = status;
 }
 
 int	get_exit_status(void)
 {
+	//printf("get_exit_status: Current exit status is %d\n", g_exit_status);
 	return (g_exit_status);
 }
 

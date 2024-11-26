@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 01:44:12 by alfreire          #+#    #+#             */
-/*   Updated: 2024/11/25 21:43:52 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/26 15:08:29 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,23 @@ void	pipe_data_flow(int cmd_index, t_minish *ms, char **fullcmd)
 
 void	relinking_in_out(t_minish *ms)
 {
-	if (ms->fd_in >= STDIN_FILENO)
+	if (ms->fd_in != STDIN_FILENO)
 	{
 		if (dup2(ms->fd_in, STDIN_FILENO) == -1)
 		{
 			perror("dup2 fd_in");
 			exit(EXIT_FAILURE);
 		}
+		close(ms->fd_in);
 	}
-	if (ms->fd_out >= STDOUT_FILENO)
+	if (ms->fd_out != STDOUT_FILENO)
 	{
 		if (dup2(ms->fd_out, STDOUT_FILENO) == -1)
 		{
 			perror("dup2 fd_out");
 			exit(EXIT_FAILURE);
 		}
+		close(ms->fd_out);
 	}
 }
 

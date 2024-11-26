@@ -6,7 +6,7 @@
 /*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 19:30:33 by joao-rib          #+#    #+#             */
-/*   Updated: 2024/11/25 21:46:19 by alfreire         ###   ########.fr       */
+/*   Updated: 2024/11/26 20:19:13 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ void	do_command(char	*cmd, char **args, t_minish *ms)
 {
 	char	**full_cmd;
 
-	set_exit_status(0);
+	//printf("do_command: Executing command '%s', current exit status = %d\n", cmd, get_exit_status());
+	//set_exit_status(0);
 	if (!is_builtin(cmd))
 	{
 		if (ms->dont_execve)
@@ -101,25 +102,113 @@ pid_t	child_exec(t_ast *node, t_minish *ms)
 	return (pid);
 }
 
-pid_t	pipeline_exec(t_ast	*node, t_minish *ms)
+// pid_t	pipeline_exec(t_ast	*node, t_minish *ms)
+// {
+// 	pid_t	last_child_pid;
+// 	t_ast	*redir_node;
+
+// 	last_child_pid = 0;
+// 	if (!node)
+// 		return (last_child_pid);
+// 	ms->dont_execve = false;
+// 	last_child_pid = pipeline_exec(node->left, ms);
+// 	last_child_pid = pipeline_exec(node->right, ms);
+// 	if (!is_redir_or_pipe(node->cmd))
+// 	{
+// 		redir_node = node->redirections;
+// 		while (redir_node)
+// 		{
+// 			execute_redir(redir_node->cmd, redir_node->args[0], ms);
+// 			redir_node = redir_node->next;		
+// 		}
+// 		if (need2be_parent(node->cmd, node->args[0], ms))
+// 			do_command(node->cmd, node->args, ms);
+// 		else
+// 			last_child_pid = child_exec(node, ms);
+// 	}
+// 	else if (is_redirection(node->cmd))
+// 		execute_redir(node->cmd, node->args[0], ms);
+// 	return (last_child_pid);
+// }
+
+bool is_input_redirection(const char *type)
+{
+    return (ft_str_cmp(type, "<") || ft_str_cmp(type, "<<"));
+}
+
+bool is_output_redirection(const char *type)
+{
+    return (ft_str_cmp(type, ">") || ft_str_cmp(type, ">>"));
+}
+
+bool process_out_redirections(t_ast *node, t_minish *ms)
+{
+	t_ast *redir_node;
+	bool redir_error;
+
+	redir_error = false;
+	redir_node = node->redirections;
+	while (redir_node != NULL)
+	{
+		if (is_output_redirection(redir_node->cmd))
+		{
+			execute_redir(redir_node->cmd, redir_node->args[0], ms);
+			if (ms->dont_execve)
+			{
+				redir_error = true;
+				break;
+			}
+		}
+		redir_node = redir_node->next;
+	}
+
+	return (redir_error);
+}
+
+bool process_redirections(t_ast *node, t_minish *ms)
+{
+    t_ast *redir_node;
+    bool redir_error;
+    
+    redir_error = false;
+    redir_node = node->redirections; // redirecoes de entrada
+    while (redir_node != NULL)
+    {
+        if (is_input_redirection(redir_node->cmd))
+        {
+            execute_redir(redir_node->cmd, redir_node->args[0], ms);
+            if (ms->dont_execve)
+            {
+                redir_error = true;
+                break;
+            }
+        }
+        redir_node = redir_node->next;
+    }
+    if (redir_error)
+        return (redir_error);
+	else
+		redir_error = process_out_redirections(node, ms);
+    return (redir_error);
+}
+
+pid_t pipeline_exec(t_ast *node, t_minish *ms)
 {
 	pid_t	last_child_pid;
-	t_ast	*redir_node;
+	bool	redir_error;
 
 	last_child_pid = 0;
-	if (!node)
-		return (last_child_pid);
+	redir_error = false;
+	if (node == NULL)
+		return last_child_pid;
 	ms->dont_execve = false;
 	last_child_pid = pipeline_exec(node->left, ms);
 	last_child_pid = pipeline_exec(node->right, ms);
 	if (!is_redir_or_pipe(node->cmd))
 	{
-		redir_node = node->redirections;
-		while (redir_node)
-		{
-			execute_redir(redir_node->cmd, redir_node->args[0], ms);
-			redir_node = redir_node->next;		
-		}
+		redir_error = process_redirections(node, ms);
+		if (redir_error || ms->dont_execve)
+			return (last_child_pid);
 		if (need2be_parent(node->cmd, node->args[0], ms))
 			do_command(node->cmd, node->args, ms);
 		else
@@ -127,6 +216,7 @@ pid_t	pipeline_exec(t_ast	*node, t_minish *ms)
 	}
 	else if (is_redirection(node->cmd))
 		execute_redir(node->cmd, node->args[0], ms);
+	//printf("pipeline_exec: Exiting, last_child_pid = %d, exit status = %d\n", last_child_pid, get_exit_status());
 	return (last_child_pid);
 }
 
@@ -137,18 +227,35 @@ void	execute(t_minish *ms)
 	t_ast	*head;
 	// int		original_stdin; chat
 	// int		original_stdout;
-
+	//printf("execute: Entry, exit status = %d\n", get_exit_status());
 	head = lastpipe(ms->cmd_list);
 	status = 0x7F;
 	// original_stdin = dup(STDIN_FILENO); chat
 	// original_stdout = dup(STDOUT_FILENO);
 	pipeline_matrix(ms);
 	last = pipeline_exec(head, ms);
-	last = waitpid(last, &status, 0);
-	while (waitpid(0, NULL, 0) > 0)
-		continue ;
-	if (WIFEXITED(status))
-		set_exit_status(WEXITSTATUS(status));
+	if (last > 0)
+	{
+		waitpid(last, &status, 0);
+		//printf("execute: After waitpid, status = %d\n", status);
+		while (waitpid(0, NULL, 0) > 0)
+			continue ;
+		if (WIFEXITED(status))
+		{
+			//printf("execute: Child exited with status %d\n", WEXITSTATUS(status));
+			set_exit_status(WEXITSTATUS(status));
+		}
+		else if (WIFSIGNALED(status))
+		{
+			//printf("execute: Child terminated by signal %d\n", WTERMSIG(status));
+			set_exit_status(128 + WTERMSIG(status));
+		}
+	}
+	else
+    {
+		//printf("execute: No child process executed\n");
+    }
+	//printf("execute: Exit, exit status = %d\n", get_exit_status());
 	set_signals();
 	// dup2(original_stdin, STDIN_FILENO); chat
 	// dup2(original_stdout, STDOUT_FILENO);

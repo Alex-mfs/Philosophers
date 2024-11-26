@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joao-rib <joao-rib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 01:39:57 by alfreire          #+#    #+#             */
-/*   Updated: 2024/11/20 10:25:20 by joao-rib         ###   ########.fr       */
+/*   Updated: 2024/11/26 14:25:37 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ char	*get_executable_path(char *cmd, t_minish *ms)
 {
 	char	*path;
 
+	if (cmd == NULL || cmd[0] == '\0')
+		return (NULL);
 	if (cmd[0] == '.')
 		path = (get_relative_path(cmd, ms));
 	else

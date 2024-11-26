@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_aux.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joao-rib <joao-rib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 01:56:02 by alfreire          #+#    #+#             */
-/*   Updated: 2024/11/20 11:56:04 by joao-rib         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:49:11 by alfreire         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,17 @@ void	read_until_delimiter(const char *delimiter, t_minish *ms)
 	while (1)
 	{
 		line = readline("heredoc > ");
-		if (!line || ft_str_cmp(line, delimiter))
+		if (!line)
+		{
+			close(fd);
+			set_exit_status(0);
+			if (errno == EINTR)
+				set_exit_status(130);
+			exit(get_exit_status());
+		}
+		if (ft_str_cmp(line, delimiter))
 		{
 			free(line);
-			printf("\n");
 			break ;
 		}
 		line = expand_heredoc(line, ms->env_list);
@@ -95,5 +102,5 @@ void	read_until_delimiter(const char *delimiter, t_minish *ms)
 		free(line);
 	}
 	close(fd);
-	exit(EXIT_SUCCESS);
+	//exit(EXIT_SUCCESS);
 }
