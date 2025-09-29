@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alfreire <alfreire@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:26:17 by alfreire          #+#    #+#             */
-/*   Updated: 2024/10/31 13:27:23 by alfreire         ###   ########.fr       */
+/*   Updated: 2025/09/29 14:55:16 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	print_msg(t_data *data, int id, char *msg)
 	time = get_time() - get_start_time(data);
 	pthread_mutex_lock(&data->mut_print);
 	if (get_keep_iter(data))
-		printf("%lu %d %s\n", time, id, msg);
+		printf("%llu %d %s\n", (unsigned long long)time, id, msg);
 	pthread_mutex_unlock(&data->mut_print);
 }
 
